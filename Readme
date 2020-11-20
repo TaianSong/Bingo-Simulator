@@ -1,0 +1,8 @@
+/*
+ * Read me
+ * In this project, I scan the file and save the data I read from the file to a 3d array called Bingo[][][]
+ * I created an another 3d array called back[][][] to inform computer which number was called
+ * I compared the called number to my Bingo[][][], if they are same then print with color
+ * I check Bingo win by checking row and column and diagonal
+ * After check one player win, I also check the rest players
+ */
