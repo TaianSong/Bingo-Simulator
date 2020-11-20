@@ -1,0 +1,166 @@
+/**************************************************/
+
+/*Colors (you can add or remove from this list*/
+#include <stdio.h>
+#include <string.h>
+
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
+
+
+
+/*Main function*/
+int main(int argc, char** argv) {
+
+    FILE *input;
+
+    int numberp, numberd, square;
+    int sum = 0;
+    input = fopen("BingoSampleInput1.txt", "r");
+    fscanf(input, "%d %d", &numberp, &numberd);
+    square = numberd * numberd;
+
+    char name[numberp][64];
+    int i, j, k, f,l;
+    int Bingo[numberp][numberd][numberd];
+    int numbercall[square];
+    int gameover =0 ;
+    int back[numberp][numberd][numberd];
+    memset(back, 0 ,sizeof(back));
+    int win[numberp] ;
+    memset(win, 0, sizeof(win));
+
+
+
+
+    for (k = 0; k < numberp; k++) {
+        fscanf(input, "%s", name[k]);
+        for (i = 0; i < numberd; i++) {
+            for (j = 0; j < numberd; j++) {
+                fscanf(input, "%d", &Bingo[k][j][i]);
+            }
+        }
+    }
+//scan file
+    printf("\nStart The Game\n");
+
+    for (k = 0; k < numberp; k++){
+        printf("*** %s ***\n", name[k]);
+        for (i = 0; i < numberd; i++){
+            for (j = 0; j < numberd; j++) {
+                printf("%d ", Bingo[k][j][i]);
+            }
+            printf("\n");
+        }
+    }
+//print what read in file
+
+    for (f=0; f<square; f++){
+        fscanf(input, "%d", &numbercall[f]);
+    }
+//scan the bottom line of the code
+    printf("\n");
+
+    for (l = 0; l < square ; l++) {
+        printf("Number Called: \n%d\n", numbercall[l]);
+
+        for (k = 0; k < numberp; k++) {
+            printf("*** %s *** \n", name[k]);
+            for (i = 0; i < numberd; i++) {
+                for (j = 0; j < numberd; j++) {
+                    if (numbercall[l] == Bingo[k][j][i]) {
+                        printf(KRED);
+                        printf("%d ", Bingo[k][j][i]);
+                        printf(KNRM);
+                        back[k][j][i] = 1;
+                        /*printf(KYEL);
+                        printf("%d ", back[k][j][i]);
+                        printf(KNRM);*/
+                        //check back array number
+                    } else {
+                        if (back[k][j][i] == 1) {
+                            printf(KGRN);
+                            printf("%d ", Bingo[k][j][i]);
+                            printf(KNRM);
+                        } else {
+                            printf("%d ", Bingo[k][j][i]);
+                        }
+                        /*printf(KYEL);
+                        printf("%d ", back[k][j][i]);
+                        printf(KNRM);*/
+                        //check back array number
+                    }
+                }
+                printf("\n");
+            }
+            printf("\n");
+        }
+
+        for (k = 0; k < numberp; k++) {
+
+            for (i = 0; i < numberd; i++) {
+                for (j = 0; j < numberd; j++) {
+                    //printf("%d\n", back[k][j][i]);
+                    sum = sum + back[k][j][i];
+                }
+                //printf("Sum1 = %d\n", sum);
+                if (sum == numberd) {
+                    //printf("Player %s Win", name[k]);
+                    win[k] =1;
+                    gameover++;
+                    break;
+                }
+                sum = 0;
+                //check row win
+            }
+            for (j = 0; j < numberd; j++) {
+                for (i = 0; i < numberd; i++) {
+                    sum = sum + back[k][j][i];
+                }
+                //printf("Sum2 = %d\n", sum);
+                if (sum == numberd) {
+                    //printf("Player %s Win", name[k]);
+                    win[k] =1;
+                    gameover++;
+                    break;
+                }
+                sum = 0;
+                //check column
+            }
+            for (i = 0; i < numberd; i++) {
+                sum = sum + back[k][i][i];
+                //printf("Sum3 = %d\n", sum);
+                if (sum == numberd) {
+                    //printf("Player %s Win", name[k]);
+                    win[k] =1;
+                    gameover++;
+                    break;
+                }
+                sum = 0;
+                //check diagonal
+            }
+        }
+        if (gameover != 0){
+            goto end;
+        }
+    }
+    end:
+    printf("The Game Result:\n");
+    printf("%d ", numberd);
+    for(k=0; k < numberp; k++){
+        if(win[k] ==1 ){
+            printf("%s ", name[k]);
+        }
+    }
+
+
+
+    fclose(input);
+    return 0;
+}
